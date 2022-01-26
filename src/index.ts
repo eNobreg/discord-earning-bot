@@ -5,8 +5,8 @@ import 'reflect-metadata';
 import { registerCommands, registerEvents } from './utils/registry';
 import config from '../slappey.json';
 import DiscordClient from './client/client';
-import { Intents } from 'discord.js';
-import { createConnection } from 'typeorm';
+import { Intents, Guild, Collection } from 'discord.js';
+import { createConnection, getRepository } from 'typeorm';
 import { GuildConfiguration } from './typeorm/entities/GuildConfiguration';
 
 
@@ -25,7 +25,19 @@ const client = new DiscordClient({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS
 		entities: [GuildConfiguration],
 	});
 
-	client.prefix = config.prefix || client.prefix;
+
+	//client.prefix = config.prefix || client.prefix;
+
+	const configRepo = getRepository(GuildConfiguration);
+	const guildConfigs = await configRepo.find();
+	const configs = new Collection<string, GuildConfiguration>();
+	guildConfigs.forEach((config) => configs.set(config.guildID, config));
+
+
+	client.configs = configs;
+	console.log(client.configs);
+
+
 	await registerCommands(client, '../commands');
 	await registerEvents(client, '../events');
 	await client.login(process.env.DJS_BOT_TOKEN);

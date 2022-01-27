@@ -10,7 +10,13 @@ import { createConnection, getRepository } from 'typeorm';
 import { GuildConfiguration } from './typeorm/entities/GuildConfiguration';
 
 
-const client = new DiscordClient({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES ] });
+const client = new DiscordClient({ 
+	intents: [
+		Intents.FLAGS.GUILDS, 
+		Intents.FLAGS.GUILD_MESSAGES, 
+		Intents.FLAGS.GUILD_MEMBERS 
+	]
+});
 
 (async () => {
 

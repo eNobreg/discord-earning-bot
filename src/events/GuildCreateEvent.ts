@@ -24,6 +24,7 @@ export default class GuildCreateEvent extends BaseEvent {
 		if (config) 
 		{
 			console.log("A configuration was found!");
+			client.configs.set(guild.id, config);
 		} 
 		else
 		{
@@ -31,7 +32,9 @@ export default class GuildCreateEvent extends BaseEvent {
 			const newConfig = this.guildConfigRepository.create({
 				guildID: guild.id,
 			});
-			return this.guildConfigRepository.save(newConfig);
+			const savedConfig = await this.guildConfigRepository.save(newConfig);
+			client.configs.set(guild.id, savedConfig);
+			console.log(client.configs);
 		}
 	}
 }

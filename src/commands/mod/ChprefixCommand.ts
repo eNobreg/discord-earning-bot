@@ -19,12 +19,15 @@ export default class ChprefixCommand extends BaseCommand {
 
 	const [newPrefix] = args;
 	try {
-		await this.guildConfigRepository.update
-		(
-			{ guildID: message.guildId! }, 
-			{prefix: newPrefix}
-		);
+		const config = client.configs.get(message.guildId!);
+		const updatedConfig = await this.guildConfigRepository.save({
+			...config, 
+			prefix: newPrefix,
+		});
+		console.log(updatedConfig);
 		message.channel.send("Updated prefix!");
+		client.configs.set(message.guildId!, updatedConfig);
+		console.log(client.configs);
 
 	} catch (err) {
 		console.log(err);
